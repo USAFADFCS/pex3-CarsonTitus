@@ -1,7 +1,7 @@
 /** pagequeue.c
  * ===========================================================
- * Name: _______________________, __ ___ 2026
- * Section: CS483 / ____
+ * Name: Carson Titus, 04-07-2026
+ * Section: CS483 / M3
  * Project: PEX3 - Page Replacement Simulator
  * Purpose: Implementation of the PageQueue ADT — a doubly-linked
  *          list for LRU page replacement.
