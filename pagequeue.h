@@ -1,7 +1,7 @@
 /** pagequeue.h
  * ===========================================================
- * Name: _______________________, __ ___ 2026
- * Section: CS483 / ____
+ * Name: Carson Titus, 04-07-2026
+ * Section: CS483 / M3
  * Project: PEX3 - Page Replacement Simulator
  * Purpose: Doubly-linked list page queue ADT for LRU page
  *          replacement. Head = LRU end, Tail = MRU end.
@@ -58,6 +58,6 @@ void pqFree(PageQueue *pq);
  * @brief Print queue contents to stderr for debugging
  * @param pq pointer to the PageQueue to display
  */
-void pqPrint(PageQueue *pq);
+void pqPrint(PageQueue *pq); // optional implementation
 
 #endif  // PAGEQUEUE_H
