@@ -10,13 +10,15 @@
 #ifndef BYUTR_H
 #define BYUTR_H
 
+#include <stdint.h>
+
 typedef struct BYUADDRESSTRACE {
-    unsigned long addr;
-    unsigned char reqtype;
-    unsigned char size;
-    unsigned char attr;
-    unsigned char proc;
-    unsigned long time;
+    uint32_t addr;
+    uint8_t reqtype;
+    uint8_t size;
+    uint8_t attr;
+    uint8_t proc;
+    uint32_t time;
 } p2AddrTr;
 
 /* reqtype values */
@@ -40,5 +42,6 @@ typedef struct BYUADDRESSTRACE {
 #define FLUSHACK 0x35   // acknowledge flush
 #define STOPCLKACK 0x36 // acknowledge stop clock
 #define SMIACK 0x37     // acknowledge SMI mode
+
 
 #endif  // BYUTR_H

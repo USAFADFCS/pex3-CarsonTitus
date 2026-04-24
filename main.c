@@ -6,7 +6,11 @@
  * Purpose: Reads a BYU binary memory trace file and simulates
  *          LRU page replacement to measure fault rates across
  *          varying frame allocations.
- * Documentation: TBD
+ * Documentation: how to use calloc -
+ * https://www.rameshfadatare.com/c-programming/c-program-to-allocate-memory-for-an-array-using-calloc/)
+ * Review of doubly linked list - (https://www.geeksforgeeks.org/dsa/doubly-linked-list/)
+ * Used a lot of code from CS220 replacing variables as described so it would work for this assignment. 
+ * Claud.ai used for excel formatting, how to get csv files to host machine, overview (linked in word doc & emailed).
  * =========================================================== */
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,12 +70,16 @@ int main(int argc, char **argv) {
 
     fprintf(stderr, "Frame size option %d: %d offset bits, %d max frames, algorithm=LRU\n",
             menuOption, offsetBits, maxFrames);
-
+    fflush(stderr);
     // TODO: Create your PageQueue (call pqInit, which returns a pointer)
     //       and allocate the faults[] array.  faults[f] will hold the
     //       total number of page faults that occur when f frames are
     //       available.  Use calloc so all entries start at zero.
 
+    PageQueue *pq = pqInit(maxFrames);
+    // maxFrames + 1 becuase index starts at 1 not 0 as seen in slide 8 (f = 1, not f = 0)
+    unsigned long *faults = (unsigned long*)calloc(maxFrames + 1, sizeof(unsigned long));
+    
     // Process each memory access from the trace file
     while (!feof(ifp)) {
         fread(&traceRecord, sizeof(p2AddrTr), 1, ifp);
@@ -85,7 +93,6 @@ int main(int argc, char **argv) {
         if ((numAccesses % PROGRESS_INTERVAL) == 0) {
             fprintf(stderr, "%lu samples read, last page: %lu\r", numAccesses, pageNum);
         }
-
         // TODO: Call pqAccess() to simulate this memory reference.
         //       It returns:
         //         -1      -> page was NOT in the queue (fault for ALL frame counts)
@@ -93,7 +100,19 @@ int main(int argc, char **argv) {
         //                    (fault for any allocation with fewer than d+1 frames)
         //
         //       Update faults[] accordingly.
-
+        long depth = pqAccess(pq, pageNum); // copy/paste from PEX3 slide 8. 
+        if (depth == -1) {
+        // Miss: fault for every frame count
+            for (int f = 1; f <= maxFrames; f++){
+                faults[f]++;
+            }
+        } 
+        else {
+        // Hit at depth d: fault for f <= d
+            for (int f = 1; f <= depth; f++){
+                faults[f]++;
+            }
+        }
     }
 
     fprintf(stderr, "\n%lu total accesses processed\n", numAccesses);
@@ -103,11 +122,14 @@ int main(int argc, char **argv) {
     printf("Frames,Missees,Miss Rate\n");
 
     // TODO: Loop from frame count 1 to maxFrames and print each row:
-    //       printf("%d,%lu,%f\n", frameCount, faults[frameCount],
-    //              (double)faults[frameCount] / (double)numAccesses);
-
+    for (int f = 1; f <= maxFrames; f++){
+          printf("%d,%lu,%f\n", f, faults[f],
+            (double)faults[f] / (double)numAccesses);
+          }
     // TODO: Free your PageQueue and the faults[] array,
     //       then close the file.
-
+    pqFree(pq);
+    free(faults);
+    fclose(ifp);
     return 0;
 }
